@@ -33,6 +33,7 @@ jobs:
         name: NStrip-osx-x64
         path: NStrip/bin/Release/net6.0/osx-x64/publish/NStrip
     - name: Rename files
+      if: startsWith(github.ref, 'refs/tags')
       run: |
         mkdir -p publish
         cp NStrip/bin/Release/net6.0/win-x64/publish/NStrip.exe publish/NStrip-win-x64.exe
