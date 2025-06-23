@@ -17,15 +17,27 @@ jobs:
         dotnet publish NStrip -c Release -f net6.0 -r win-x64
         dotnet publish NStrip -c Release -f net6.0 -r osx-x64
         dotnet publish NStrip -c Release -f net6.0 -r linux-x64
-        mkdir -p publish
-        cp NStrip/bin/Release/net6.0/win-x64/publish/NStrip.exe publish/NStrip.exe
-        cp NStrip/bin/Release/net6.0/osx-x64/publish/NStrip publish/NStrip-mac
-        cp NStrip/bin/Release/net6.0/linux-x64/publish/NStrip publish/NStrip-linux
-    - name: Upload
+    - name: Upload Windows
       uses: actions/upload-artifact@v4
       with:
-        name: NStrip-builds
-        path: publish/
+        name: NStrip-win-x64
+        path: NStrip/bin/Release/net6.0/win-x64/publish/NStrip.exe
+    - name: Upload Linux
+      uses: actions/upload-artifact@v4
+      with:
+        name: NStrip-linux-x64
+        path: NStrip/bin/Release/net6.0/linux-x64/publish/NStrip
+    - name: Upload macOS
+      uses: actions/upload-artifact@v4
+      with:
+        name: NStrip-osx-x64
+        path: NStrip/bin/Release/net6.0/osx-x64/publish/NStrip
+    - name: Rename files
+      run: |
+        mkdir -p publish
+        cp NStrip/bin/Release/net6.0/win-x64/publish/NStrip.exe publish/NStrip-win-x64.exe
+        cp NStrip/bin/Release/net6.0/linux-x64/publish/NStrip publish/NStrip-linux
+        cp NStrip/bin/Release/net6.0/osx-x64/publish/NStrip publish/NStrip-osx
     - name: Release
       uses: softprops/action-gh-release@v2
       if: startsWith(github.ref, 'refs/tags')
@@ -33,5 +45,6 @@ jobs:
         draft: true
         prerelease: false
         files: |
-          publish/NStrip.exe
-          publish/NStrip-linux
+          publish/NStrip-win-x64.exe
+          publish/NStrip-linux-x64
+          publish/NStrip-osx-x64
